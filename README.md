@@ -31,7 +31,7 @@ This package is obviously very limited now. Here's the plan:
 
 ```json
 {
-  "json": 123456,
+  "ansi": 123456,
   "cover": "https://cover.url",
   "year": 2015
 }
