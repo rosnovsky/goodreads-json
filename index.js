@@ -1,11 +1,10 @@
-const convert = require('xml-js');
-const fetch = require('node-fetch');
-
-async function goodreadsBookJSON(bookUrl) {
+module.exports = async function goodreadsBookJSON(bookUrl) {
+  const convert = require('xml-js');
+  const fetch = require('node-fetch');
   const regex = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
 
   if (typeof bookUrl !== 'string' || !regex.test(bookUrl)) {
-    throw new TypeError('Goodreads JSON Book requires a URL as an argument!');
+    throw new TypeError('Goodreads JSON Book requires a URL as an argument.');
   } else {
     const bookData = await fetch(bookUrl)
       .then(res => res.text())
@@ -24,4 +23,4 @@ async function goodreadsBookJSON(bookUrl) {
       });
     return bookData;
   }
-}
+};
