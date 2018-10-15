@@ -6,7 +6,7 @@ If you're using Goodreads API, with this package you could use it in JSON. This 
 
 ## Installation
 
-```
+```bash
 yarn add goodreads-json
 yarn install
 ```
@@ -15,7 +15,7 @@ yarn install
 
 Basically, after you've installed the package, you could just import it in your project like this:
 
-```
+```javascript
 const goodreads = require('goodreads-json');
 ```
 
