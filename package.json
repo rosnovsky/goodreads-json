@@ -10,6 +10,13 @@
     "name": "Artem Rosnovsky",
     "email": "artem@rosnovsky.us"
   },
+  "keywords": [
+    "goodreads",
+    "goodreads api",
+    "goodreads json",
+    "json",
+    "api"
+  ],
   "engines": {
     "node": ">= 10.0.0",
     "npm": ">= 5.0.0"
