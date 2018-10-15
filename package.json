@@ -1,6 +1,6 @@
 {
   "name": "goodreads-json",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "This package fetches book's data from GoodReads API and returns book's JSON object",
   "repository": {
     "type": "git",
