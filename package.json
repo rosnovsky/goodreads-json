@@ -23,11 +23,15 @@
   },
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "license": "MIT",
   "dependencies": {
     "node-fetch": "^2.2.0",
     "xml-js": "^1.6.8"
+  },
+  "devDependencies": {
+    "jest": "23.6.0",
+    "nock": "10.0.6"
   }
 }

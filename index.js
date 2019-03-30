@@ -1,26 +1,48 @@
-module.exports = async function goodreadsBookJSON(bookUrl) {
-  const convert = require('xml-js');
-  const fetch = require('node-fetch');
-  const regex = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
+module.exports = function goodreads(key) {
+  this.key = key || '';
 
-  if (typeof bookUrl !== 'string' || !regex.test(bookUrl)) {
-    throw new TypeError('Goodreads JSON Book requires a URL as an argument.');
-  } else {
-    const bookData = await fetch(bookUrl)
+  const convert = require('./xml2js-ext');
+  const fetch = require('node-fetch');
+  const urlRegex = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
+  const goodreadBaseUrl = 'https://www.goodreads.com/';
+
+  function buildBookUrl(title, key, author) {
+    if (typeof title !== 'string') {
+      throw new TypeError('Goodreads JSON Book request requires title to be non-empty string.');
+    }
+    const authorForRequest = author ? encodeURI(author) : '';
+    const titleForRequest = encodeURI(title);
+    return `${goodreadBaseUrl}book/title.xml?title=${titleForRequest}&key=${key}&author=${authorForRequest}`;
+  }
+
+  function isUrlString(bookUrl) {
+    return typeof bookUrl === 'string' && urlRegex.test(bookUrl);
+  }
+
+  function fetchAndConvertToJson(url) {
+    return fetch(url)
       .then(res => res.text())
       .then(body => {
-        const json = convert.xml2json(body.toString(), {
-          compact: true
-        });
-        const book = JSON.parse(json);
-        return book.GoodreadsResponse.book;
-      })
-      .then(result => {
-        return result;
-      })
-      .catch(error => {
-        throw new Error(error);
+        const json = convert(body.toString());
+        return JSON.parse(json);
       });
-    return bookData;
   }
+
+  this.getBookInfo = function(request) {
+    const isUrl = isUrlString(request);
+    const isBookRequestOjbect = typeof request === 'object';
+    let bookUrl;
+
+    if (isUrl) {
+      bookUrl = request;
+    } else if (isBookRequestOjbect) {
+      bookUrl = buildBookUrl(request.title, request.key || this.key, request.author);
+    }
+
+    if (!bookUrl) {
+      throw new TypeError('Goodreads JSON Book requires a URL or book request object as an argument.');
+    } else {
+      return fetchAndConvertToJson(bookUrl).then(res => res.GoodreadsResponse.book);
+    }
+  };
 };
