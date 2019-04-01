@@ -1,3 +1,4 @@
+// based on the https://github.com/nashwaan/xml-js/issues/53 thread
 module.exports = function(xml) {
   function nativeType(value) {
     const nValue = Number(value);
@@ -28,7 +29,7 @@ module.exports = function(xml) {
       const lastKeyName = grandParentKeys[grandParentKeys.length - 1];
 
       const existingValue = grandParent[lastKeyName];
-      if (typeof existingValue.length !== 'undefined') {
+      if (Array.isArray(existingValue)) {
         const arrIndex = existingValue.length - 1;
         existingValue[arrIndex] = nativeValue;
       } else {

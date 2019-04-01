@@ -15,13 +15,56 @@ module.exports = function goodreads(key) {
     return `${goodreadBaseUrl}book/title.xml?title=${titleForRequest}&key=${key}&author=${authorForRequest}`;
   }
 
+  function buildUserInfoUrl(userId, key) {
+    return `${goodreadBaseUrl}user/show/${userId}.xml?key=${key}`;
+  }
+
+  function buildBookAllShelvesUrl(userId, key) {
+    return `${goodreadBaseUrl}review/list/${userId}.xml?key=${key}&v=2`;
+  }
+
+  function buildBookShelvesUrl({ key, userId, shelf, sort, order, query, page, perPage }) {
+    const baseUrl = buildBookAllShelvesUrl(userId, key);
+    const extraParameters = [''];
+    if (shelf) {
+      extraParameters.push(`shelf=${shelf}`);
+    }
+    if (sort) {
+      extraParameters.push(`sort=${sort}`);
+    }
+    if (order) {
+      extraParameters.push(`order=${order}`);
+    }
+    if (query) {
+      extraParameters.push(`search[query]=${encodeURI(query)}`);
+    }
+    if (page) {
+      extraParameters.push(`page=${page}`);
+    }
+    if (perPage) {
+      extraParameters.push(`per_page=${perPage}`);
+    }
+
+    const extraParametersString = extraParameters.length > 1 ? extraParameters.join('&') : '';
+    return baseUrl + extraParametersString;
+  }
+
   function isUrlString(bookUrl) {
     return typeof bookUrl === 'string' && urlRegex.test(bookUrl);
   }
 
   function fetchAndConvertToJson(url) {
     return fetch(url)
-      .then(res => res.text())
+      .then(res => {
+        switch (res.status) {
+          case 200:
+            return res.text();
+          case 401:
+            throw new Error('Invalid API key.');
+          default:
+            throw new Error(`HTTP Error ${res.status}: ${res.body}`);
+        }
+      })
       .then(body => {
         const json = convert(body.toString());
         return JSON.parse(json);
@@ -44,5 +87,29 @@ module.exports = function goodreads(key) {
     } else {
       return fetchAndConvertToJson(bookUrl).then(res => res.GoodreadsResponse.book);
     }
+  };
+
+  this.getUserInfo = function(userId, key) {
+    if (typeof userId !== 'number' && typeof userId !== 'string') {
+      throw new TypeError('Parameter userId should be string or number');
+    }
+    const userUrl = buildUserInfoUrl(userId, key || this.key);
+    return fetchAndConvertToJson(userUrl).then(res => res.GoodreadsResponse.user);
+  };
+
+  this.getShelfBooks = function(request) {
+    let shelfUrl;
+    if (typeof request === 'string' || typeof request === 'number') {
+      shelfUrl = buildBookAllShelvesUrl(request, this.key);
+    } else if (typeof request === 'object') {
+      request.key = request.key || this.key;
+      shelfUrl = buildBookShelvesUrl(request);
+    }
+
+    if (!shelfUrl) {
+      throw new TypeError('Parameter should be string or number for userId or object for extra options.');
+    }
+
+    return fetchAndConvertToJson(shelfUrl).then(res => res.GoodreadsResponse.reviews);
   };
 };
