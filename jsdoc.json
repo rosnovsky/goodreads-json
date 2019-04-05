@@ -1,0 +1,15 @@
+{
+  "plugins": ["plugins/markdown"],
+  "source": {
+    "include": "index.js"
+  },
+  "opts": {
+    "encoding": "utf8",
+    "destination": "./docs/"
+  },
+  "templates": {
+    "default": {
+      "outputSourceFiles": false
+    }
+  }
+}

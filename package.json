@@ -1,7 +1,7 @@
 {
   "name": "goodreads-json",
   "version": "0.4.0",
-  "description": "This package fetches book's data from GoodReads API and returns book's JSON object",
+  "description": "This package provides wrapper for the official Goodreads API. You can get information about the book, user and book on the user's shelves.",
   "repository": {
     "type": "git",
     "url": "https://github.com/rosnovsky/goodreads-json"
@@ -23,7 +23,8 @@
   },
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "docs": "jsdoc -c jsdoc.json"
   },
   "license": "MIT",
   "dependencies": {
@@ -32,6 +33,7 @@
   },
   "devDependencies": {
     "jest": "23.6.0",
-    "nock": "10.0.6"
+    "nock": "10.0.6",
+    "jsdoc": "3.5.5"
   }
 }

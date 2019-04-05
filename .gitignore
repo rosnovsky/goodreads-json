@@ -75,3 +75,6 @@ typings/
 # System
 .DS_Store
 .vscode
+
+# jsdocs
+docs/
