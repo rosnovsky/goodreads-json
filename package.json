@@ -33,7 +33,7 @@
   },
   "devDependencies": {
     "jest": "24.9.0",
-    "nock": "11.7.0",
+    "nock": "13.0.4",
     "jsdoc": "3.6.3"
   }
 }
